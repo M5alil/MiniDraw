@@ -137,14 +137,18 @@ namespace GeometryTest
                 for (int j = 0; j < Xs.Count; j++)
                 {
                     List<I2DShape> shapes = lines[i].SolveForY(Xs[j]);
-                    //Assert.Single(shapes);
-                    var X = ExpectedLinesReturnsForXs[i][j];
-                    if (X.Count == 0)
-                        Assert.Empty(shapes);
+                    List<I2DShape> ExpectedYs = ExpectedLinesReturnsForXs[i][j];
+                    Assert.Equal(ExpectedYs.Count, shapes.Count);
                     for (int k = 0; k < shapes.Count; k++)
                     {
-                        bool TF = X[k].Equals( shapes[k]);
-                        Assert.True(TF);
+                        Point P = shapes[k] as Point;
+                        if (P != null)
+                            Assert.Equal(ExpectedYs[k], P);
+                        else
+                        {
+                            bool TF = ExpectedYs[k].Equals(shapes[k]);
+                            Assert.True(TF);
+                        }
                     }
                 }
             }

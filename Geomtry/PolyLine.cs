@@ -17,12 +17,22 @@ namespace Geomtry
 
         public List<I2DShape> SolveForX(double y)
         {
-            throw new NotImplementedException();
+            List<I2DShape> _return = new List<I2DShape>();
+            foreach (var Line in Lines)
+            {
+                _return.AddRange(Line.SolveForX(y));
+            }
+            return _return;
         }
 
         public List<I2DShape> SolveForY(double x)
         {
-            throw new NotImplementedException();
+            List<I2DShape> _return = new List<I2DShape>();
+            foreach (var Line in Lines)
+            {
+                _return.AddRange(Line.SolveForY(x));
+            }
+            return _return;
         }
     }
 }

@@ -102,11 +102,10 @@ namespace Geomtry
             else
                 _return = Slope - other.Slope < 0.000001;
             return other != null &&
-                   StartPoint.Equals( other.StartPoint) &&
-                   EndPoint.Equals( other.EndPoint) &&
+                   StartPoint.Equals(other.StartPoint) &&
+                   EndPoint.Equals(other.EndPoint) &&
                    incline == other.incline &&
                    _return;
         }
-
     }
 }

@@ -34,9 +34,9 @@ namespace Geomtry
         public bool Equals(Point other)
         {
             return other != null &&
-                   X - other.X < 0.00001 &&
-                   Y - other.Y < 0.00001 &&
-                   Z - other.Z < 0.00001;
+                   X - other.X < 0.000001 &&
+                   Y - other.Y < 0.000001 &&
+                   Z - other.Z < 0.000001 ;
         }
 
         public List<I2DShape> SolveForX(double y)
@@ -67,5 +67,16 @@ namespace Geomtry
         {
             return "X = " + X + ", Y = " + Y + ", Z = " + Z;
         }
+
+        public static bool operator ==(Point point1, Point point2)
+        {
+            return EqualityComparer<Point>.Default.Equals(point1, point2);
+        }
+
+        public static bool operator !=(Point point1, Point point2)
+        {
+            return !(point1 == point2);
+        }
+
     }
 }
