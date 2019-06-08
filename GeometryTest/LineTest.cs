@@ -9,7 +9,7 @@ namespace GeometryTest
     public class LineTest
     {
         List<Line> lines;
-        List<Line.Incline> Expectedinclines;
+        List<Line.Inclined> Expectedinclines;
         List<double?> ExpectedSlopes;
         List<double> Xs;
         List<List<List<I2DShape>>> ExpectedLinesReturnsForXs;
@@ -32,13 +32,13 @@ namespace GeometryTest
                 new Point(-2, -5),
                 new Point(-7, 5)),
             };
-            Expectedinclines = new List<Line.Incline>()
+            Expectedinclines = new List<Line.Inclined>()
             {
-                Line.Incline.Vertical,
-                Line.Incline.Horizontal,
-                Line.Incline.PositiveInclined,
-                Line.Incline.NegativeInclined,
-                Line.Incline.NegativeInclined
+                Line.Inclined.Vertical,
+                Line.Inclined.Horizontal,
+                Line.Inclined.PositiveInclined,
+                Line.Inclined.NegativeInclined,
+                Line.Inclined.NegativeInclined
             };
             ExpectedSlopes = new List<double?>()
             {
@@ -118,7 +118,7 @@ namespace GeometryTest
         {
             for (int i = 0; i < lines.Count; i++)
             {
-                Assert.Equal(Expectedinclines[i], lines[i].incline);
+                Assert.Equal(Expectedinclines[i], lines[i].Incline);
             }
         }
         [Fact]

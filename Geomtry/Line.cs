@@ -1,37 +1,40 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Geomtry
 {
     public class Line : I2DShape, IDrawable, IEquatable<Line>
     {
-        public enum Incline
+        public enum Inclined
         {
             Horizontal, Vertical, PositiveInclined, NegativeInclined
         }
         private Point _startPoint;
         private Point _endPoint;
-        public Incline incline { get; private set; }
+        public Inclined Incline { get; private set; }
         public double? Slope { get; }
-        public Point StartPoint { get => _startPoint; set => _startPoint = value; }
-        public Point EndPoint { get => _endPoint; set => _endPoint = value; }
-
+        public Point StartPoint { get => _startPoint; private set => _startPoint = value; }
+        public Point EndPoint { get => _endPoint; private set => _endPoint = value; }
+        public Point MidPoint { get => new Point((StartPoint.X + EndPoint.X) / 2, (StartPoint.Y + EndPoint.Y) / 2); }
+        public List<Point> StartSolvingPoints { get => new List<Point>() { StartPoint, EndPoint, MidPoint }; }
         public Line(Point point1, Point point2)
         {
+
             if (point1.X - point2.X == 0)
                 Slope = null;
             else
                 Slope = (point1.Y - point2.Y) / (point1.X - point2.X);
 
             if (point1.X == point2.X)
-                incline = Incline.Vertical;
+                Incline = Inclined.Vertical;
             else if (point1.Y == point2.Y)
-                incline = Incline.Horizontal;
+                Incline = Inclined.Horizontal;
             else if (Slope > 0)
-                incline = Incline.PositiveInclined;
+                Incline = Inclined.PositiveInclined;
             else if (Slope < 0)
-                incline = Incline.NegativeInclined;
+                Incline = Inclined.NegativeInclined;
 
             point1 = point1 ?? new Point();
             point2 = point2 ?? new Point();
@@ -58,7 +61,7 @@ namespace Geomtry
             if (x >= StartPoint.X && x <= EndPoint.X)
             {
 
-                if (this.incline == Incline.Vertical && StartPoint.X == x)
+                if (this.Incline == Inclined.Vertical && StartPoint.X == x)
                     return new List<I2DShape>() { this };
                 else
                     return new List<I2DShape>()
@@ -73,7 +76,7 @@ namespace Geomtry
         {
             if (y >= StartPoint.Y && y <= EndPoint.Y)
             {
-                if (this.incline == Incline.Horizontal && StartPoint.Y == y)
+                if (this.Incline == Inclined.Horizontal && StartPoint.Y == y)
                     return new List<I2DShape>() { this };
                 else
                     return new List<I2DShape>()
@@ -104,8 +107,37 @@ namespace Geomtry
             return other != null &&
                    StartPoint.Equals(other.StartPoint) &&
                    EndPoint.Equals(other.EndPoint) &&
-                   incline == other.incline &&
+                   Incline == other.Incline &&
                    _return;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Incline, Slope, StartPoint, EndPoint);
+        }
+
+        public List<Point> getIntersectionWith(I2DShape shape)
+        {
+            List<Point> _return = new List<Point>();
+            for (int i = 0; i < StartSolvingPoints.Count; i++)
+            {
+                List<Point> Points = shape.SolveForX(this.StartSolvingPoints[i].X).Cast<Point>().ToList();
+                foreach (var Point in Points)
+                {
+                    this.SolveForY(Point.X);
+                }
+            }
+            return _return;
+        }
+
+        public static bool operator ==(Line line1, Line line2)
+        {
+            return EqualityComparer<Line>.Default.Equals(line1, line2);
+        }
+
+        public static bool operator !=(Line line1, Line line2)
+        {
+            return !(line1 == line2);
         }
     }
 }

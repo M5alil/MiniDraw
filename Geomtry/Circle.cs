@@ -9,6 +9,21 @@ namespace Geomtry
         public Point Center { get; set; }
         public double Radius { get; set; }
 
+        public List<Point> StartSolvingPoints
+        {
+            get => new List<Point>()
+            {
+            new Point(Center.X + Radius, Center.Y),
+            new Point(Center.X - Radius, Center.Y),
+            new Point(Center.X, Center.Y + Radius),
+            new Point(Center.X, Center.Y - Radius),
+            new Point(Math.Cos(45 * Math.PI/180) * Radius + Center.X, Math.Sin(45 * Math.PI/180) * Radius + Center.Y),
+            new Point(-1 * Math.Cos(45 * Math.PI/180) * Radius + Center.X, Math.Sin(45 * Math.PI/180) * Radius + Center.Y),
+            new Point(Math.Cos(45 * Math.PI/180) * Radius + Center.X, Math.Sin(45 * Math.PI/180) * Radius + Center.Y),
+            new Point(Math.Cos(45 * Math.PI/180) * Radius + Center.X, -1 * Math.Sin(45 * Math.PI/180) * Radius + Center.Y),
+            };
+        }
+
         public Circle(Point center, double radius)
         {
             Center = center ?? throw new ArgumentNullException(nameof(center));
@@ -60,6 +75,11 @@ namespace Geomtry
             return other != null &&
                    EqualityComparer<Point>.Default.Equals(Center, other.Center) &&
                    Radius == other.Radius;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Center, Radius);
         }
 
         public static bool operator ==(Circle circle1, Circle circle2)
