@@ -7,12 +7,30 @@ namespace Geomtry
     {
         public List<Line> Lines { get; set; }
 
+        public List<Point> SolvingStartPoints
+        {
+            get
+            {
+                List<Point> _return = new List<Point>();
+                foreach (var line in Lines)
+                {
+                    _return.AddRange(line.SolvingStartPoints);
+                }
+                return _return;
+            }
+        }
+
         public void Draw()
         {
             foreach (Line line in Lines)
             {
                 line.Draw();
             }
+        }
+
+        public List<Point> getIntersectionWith(I2DShape shape)
+        {
+            throw new NotImplementedException();
         }
 
         public List<I2DShape> SolveForX(double y)

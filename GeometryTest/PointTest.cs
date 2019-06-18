@@ -79,5 +79,34 @@ namespace GeometryTest
             Assert.Empty(solutions_as_points);
         }
 
+        [Fact]
+        public void SolvingStartPoints()
+        {
+            Assert.Equal(new Point(1, 1, 1), new Point(1, 1, 1).SolvingStartPoints[0]);
+        }
+
+        [Fact]
+        public void getIntersectionWithPoint()
+        {
+            Assert.Equal(p2, p2.getIntersectionWith(p2)[0]);
+            Assert.Empty(p2.getIntersectionWith(p1));
+        }
+        [Fact]
+        public void getIntersectionWithLine()
+        {
+            Line l = new Line(new Point(0, 0, 0), new Point(2, 4));
+            Line l1 = new Line(new Point(0, 1, 0), new Point(2, 4));
+            Assert.Equal(p3, p3.getIntersectionWith(l)[0]);
+            Assert.Empty(p3.getIntersectionWith(l1));
+        }
+
+        [Fact]
+        public void getIntersectionWithCircle()
+        {
+            Circle l = new Circle(new Point(5,0),5);
+
+            Assert.Equal(p1, p1.getIntersectionWith(l)[0]);
+        }
+
     }
 }

@@ -9,7 +9,7 @@ namespace Geomtry
         public Point Center { get; set; }
         public double Radius { get; set; }
 
-        public List<Point> StartSolvingPoints
+        public List<Point> SolvingStartPoints
         {
             get => new List<Point>()
             {
@@ -80,6 +80,11 @@ namespace Geomtry
         public override int GetHashCode()
         {
             return HashCode.Combine(Center, Radius);
+        }
+
+        public List<Point> getIntersectionWith(I2DShape shape)
+        {
+            throw new NotImplementedException();
         }
 
         public static bool operator ==(Circle circle1, Circle circle2)

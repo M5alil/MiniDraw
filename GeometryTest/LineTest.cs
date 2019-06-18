@@ -153,5 +153,26 @@ namespace GeometryTest
                 }
             }
         }
+
+        [Fact]
+        public void getIntersectionWith()
+        {
+            List<Point> points = lines[0].getIntersectionWith(lines[3]);
+            Assert.NotEmpty(points);
+            Assert.Equal(new Point(1, 8), points[0]);
+
+            List<Point> points0  = lines[1].getIntersectionWith(lines[2]);
+            Assert.NotEmpty(points0);
+            Assert.Equal(new Point(2, 2), points0[0]);
+
+            List<Point> points1 = lines[2].getIntersectionWith(lines[3]);
+            Assert.NotEmpty(points1);
+            Assert.Equal(new Point(4, 4), points1[0]);
+
+            List<Point> points2 = lines[1].getIntersectionWith(lines[3]);
+            Assert.NotEmpty(points2);
+            Assert.Equal(new Point(7, 2), points2[0]);
+
+        }
     }
 }

@@ -17,8 +17,8 @@ namespace Geomtry
         public double? Slope { get; }
         public Point StartPoint { get => _startPoint; private set => _startPoint = value; }
         public Point EndPoint { get => _endPoint; private set => _endPoint = value; }
-        public Point MidPoint { get => new Point((StartPoint.X + EndPoint.X) / 2, (StartPoint.Y + EndPoint.Y) / 2); }
-        public List<Point> StartSolvingPoints { get => new List<Point>() { StartPoint, EndPoint, MidPoint }; }
+        public Point MidPoint => new Point((StartPoint.X + EndPoint.X) / 2, (StartPoint.Y + EndPoint.Y) / 2);
+        public List<Point> SolvingStartPoints => new List<Point>() { StartPoint, EndPoint, MidPoint };
         public Line(Point point1, Point point2)
         {
 
@@ -74,15 +74,24 @@ namespace Geomtry
 
         public List<I2DShape> SolveForX(double y)
         {
-            if (y >= StartPoint.Y && y <= EndPoint.Y)
+            if (y >= Math.Min(StartPoint.Y, EndPoint.Y) && y <= Math.Max(StartPoint.Y, EndPoint.Y))
             {
                 if (this.Incline == Inclined.Horizontal && StartPoint.Y == y)
                     return new List<I2DShape>() { this };
                 else
-                    return new List<I2DShape>()
-                    {
-                        new Point( (y-StartPoint.Y)/(double)Slope + StartPoint.X, y )
-                    };
+                {
+                    if (Slope == null)
+                        return new List<I2DShape>()
+                        {
+                            new Point( StartPoint.X, y )
+                        };
+
+                    else
+                        return new List<I2DShape>()
+                        {
+                            new Point( (y-StartPoint.Y)/(double)Slope + StartPoint.X, y )
+                        };
+                }
             }
             else return new List<I2DShape>();
         }
@@ -119,14 +128,45 @@ namespace Geomtry
         public List<Point> getIntersectionWith(I2DShape shape)
         {
             List<Point> _return = new List<Point>();
-            for (int i = 0; i < StartSolvingPoints.Count; i++)
+            for (int i = 0; i < SolvingStartPoints.Count; i++)
             {
-                List<Point> Points = shape.SolveForX(this.StartSolvingPoints[i].X).Cast<Point>().ToList();
-                foreach (var Point in Points)
-                {
-                    this.SolveForY(Point.X);
-                }
+                Point P1 = GetIntersectBetween(this, shape, SolvingStartPoints[0]);
+                if (!_return.Contains(P1) && P1 != null)
+                    _return.Add(P1);
+                Point P2 = GetIntersectBetween(shape, this, SolvingStartPoints[0]);
+                if (!_return.Contains(P2) && P2 != null)
+                    _return.Add(P2);
             }
+            return _return;
+        }
+
+        static Point GetIntersectBetween(I2DShape L1, I2DShape L2, Point StartPoint)
+        {
+            Point _return = null;
+
+            Point P1 = StartPoint;
+            bool isConverging = false;
+            double Difference = double.MaxValue;
+            do
+            {
+                List<Point> Points = L2.SolveForX(P1.Y).OfType<Point>().Cast<Point>().ToList();
+                Point P2;
+                if (Points.Count > 0)
+                {
+                    List<Point> Ps = L1.SolveForY(Points[0].X).OfType<Point>().Cast<Point>().ToList();
+                    if (Ps.Count > 0) P2 = Ps[0];
+                    else break;
+                }
+                else break;
+
+                isConverging = (P1 - P2).LengthToOrigin < Difference;
+                Difference = (P1 - P2).LengthToOrigin;
+                P1 = P2;
+
+                if (Difference < 0.000001)
+                { _return = P1; break; }
+            } while (isConverging && Difference > 0.000001);
+
             return _return;
         }
 

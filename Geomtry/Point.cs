@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Geomtry
 {
@@ -21,6 +22,11 @@ namespace Geomtry
         public double Y { get; set; }
         public double Z { get; set; }
 
+        public List<Point> SolvingStartPoints
+        {
+            get { return new List<Point> { this }; }
+        }
+
         public void Draw()
         {
             throw new NotImplementedException();
@@ -36,7 +42,24 @@ namespace Geomtry
             return other != null &&
                    X - other.X < 0.000001 &&
                    Y - other.Y < 0.000001 &&
-                   Z - other.Z < 0.000001 ;
+                   Z - other.Z < 0.000001;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
+
+        public List<Point> getIntersectionWith(I2DShape shape)
+        {
+            List<Point> points = shape.SolveForY(this.X).Cast<Point>().ToList();
+            if(points.Count == 0)
+                return new List<Point>();
+            Point x = points[0];
+            if (x == this)
+                return new List<Point> { this };
+            else
+                return new List<Point>();
         }
 
         public List<I2DShape> SolveForX(double y)
@@ -77,6 +100,19 @@ namespace Geomtry
         {
             return !(point1 == point2);
         }
+        
+        public static Point operator- (Point LHS , Point RHS)
+        {
+            return new Point(LHS.X - RHS.X, LHS.Y - RHS.Y, LHS.Z - RHS.Z);
+        }
 
+        public static Point operator+ (Point LHS, Point RHS)
+        {
+            return new Point(LHS.X + RHS.X, LHS.Y + RHS.Y, LHS.Z + RHS.Z);
+        }
+        
+        public double LengthToOrigin =>
+             Math.Sqrt(Math.Pow(this.X,2) + Math.Pow(this.Y,2) + Math.Pow(this.Z,2));
+        
     }
 }

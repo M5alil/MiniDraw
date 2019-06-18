@@ -9,7 +9,7 @@ namespace Geomtry
         List<I2DShape> SolveForY(double x);
         List<I2DShape> SolveForX(double y);
 
-        List<Point> StartSolvingPoints { get ; }
+        List<Point> SolvingStartPoints { get ; }
         List<Point> getIntersectionWith(I2DShape shape);
     }
 }

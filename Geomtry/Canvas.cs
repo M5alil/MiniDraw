@@ -18,10 +18,10 @@ namespace Geomtry
         }
         static public List<I2DShape> getIntersections(I2DShape LHS, I2DShape RHS)
         {
-            List<>
+            //List<>
             List<I2DShape> _return = new List<I2DShape>();
-            List<Point> startSolvingPoints = LHS.StartSolvingPoints;
-            startSolvingPoints.AddRange(RHS.StartSolvingPoints);
+            List<Point> startSolvingPoints = LHS.SolvingStartPoints;
+            startSolvingPoints.AddRange(RHS.SolvingStartPoints);
 
             
             return _return;
