@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Geomtry
 {
-    class PolyLine : IDrawable, I2DShape
+    class PolyLine : IDrawable, ISolvable
     {
         public List<Line> Lines { get; set; }
 
@@ -28,7 +28,12 @@ namespace Geomtry
             }
         }
 
-        public List<Point> getIntersectionWith(I2DShape shape)
+        public double GetEquationDiffAtX(Point P)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Point> GetIntersectionWith(ISolvable shape)
         {
             throw new NotImplementedException();
         }
@@ -52,5 +57,6 @@ namespace Geomtry
             }
             return _return;
         }
+
     }
 }

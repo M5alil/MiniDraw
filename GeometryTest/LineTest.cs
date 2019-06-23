@@ -9,10 +9,10 @@ namespace GeometryTest
     public class LineTest
     {
         List<Line> lines;
-        List<Line.Inclined> Expectedinclines;
-        List<double?> ExpectedSlopes;
+        readonly List<Line.Inclined> Expectedinclines;
+        readonly List<double?> ExpectedSlopes;
         List<double> Xs;
-        List<List<List<I2DShape>>> ExpectedLinesReturnsForXs;
+        readonly List<List<List<I2DShape>>> ExpectedLinesReturnsForXs;
         public LineTest()
         {
             lines = new List<Line>() {
@@ -20,17 +20,23 @@ namespace GeometryTest
                 new Point(1, 5),
                 new Point(1, 9)),
             new Line(
-                new Point(1, 2),
+                new Point(0, 2),
                 new Point(7, 2)),
             new Line(
                 new Point(1, 1),
-                new Point(8, 8)),
+                new Point(9, 9)),
             new Line(
                 new Point(1, 8),
                 new Point(8, 1)),
             new Line(
                 new Point(-2, -5),
                 new Point(-7, 5)),
+            new Line(
+                new Point(0,0),
+                new Point(3,9)),
+            new Line(
+                new Point(2,9),
+                new Point(6,0))
             };
             Expectedinclines = new List<Line.Inclined>()
             {
@@ -38,15 +44,21 @@ namespace GeometryTest
                 Line.Inclined.Horizontal,
                 Line.Inclined.PositiveInclined,
                 Line.Inclined.NegativeInclined,
+                Line.Inclined.NegativeInclined,
+                Line.Inclined.PositiveInclined,
                 Line.Inclined.NegativeInclined
+
+
             };
             ExpectedSlopes = new List<double?>()
             {
-                null,
+                double.NegativeInfinity,
                 0,
                 1,
                 -1,
-                -2
+                -2,
+                3,
+                -2.25
             };
             Xs = new List<double>()
             {
@@ -70,7 +82,7 @@ namespace GeometryTest
                 //lines[1]
                 new List<List<I2DShape>>()
                 {
-                    new List<I2DShape>(),
+                    new List<I2DShape>(){new Point(0,2) },
                     new List<I2DShape>(){new Point(1,2)},
                     new List<I2DShape>(){new Point(2,2)},
                     new List<I2DShape>(){new Point(3,2)},
@@ -110,6 +122,28 @@ namespace GeometryTest
                     new List<I2DShape>(),
                     new List<I2DShape>(),
                     new List<I2DShape>()
+                },
+                //lines[5]
+                new List<List<I2DShape>>()
+                {
+                    new List<I2DShape>(){new Point () },
+                    new List<I2DShape>(){ new Point(1,3)},
+                    new List<I2DShape>(){ new Point(2,6)},
+                    new List<I2DShape>(){new Point(3,9)},
+                    new List<I2DShape>(),
+                    new List<I2DShape>(),
+                    new List<I2DShape>()
+                },
+                //lines[6]
+                new List<List<I2DShape>>()
+                {
+                    new List<I2DShape>(),
+                    new List<I2DShape>(),
+                    new List<I2DShape>(){new Point(2,9)},
+                    new List<I2DShape>(){new Point(3,9-2.25)},
+                    new List<I2DShape>(){new Point(4,9-2*2.25)},
+                    new List<I2DShape>(){new Point(5,9-3*2.25)},
+                    new List<I2DShape>(){new Point(6,0)}
                 }
             };
         }
@@ -146,8 +180,9 @@ namespace GeometryTest
                             Assert.Equal(ExpectedYs[k], P);
                         else
                         {
-                            bool TF = ExpectedYs[k].Equals(shapes[k]);
-                            Assert.True(TF);
+                            Assert.Equal(ExpectedYs[k], shapes[k]);
+                            //bool TF = ExpectedYs[k].Equals();
+                            //Assert.True(TF);
                         }
                     }
                 }
@@ -155,24 +190,91 @@ namespace GeometryTest
         }
 
         [Fact]
-        public void getIntersectionWith()
+        public void GetIntersectionWith_L1_L5()
         {
-            List<Point> points = lines[0].getIntersectionWith(lines[3]);
+            List<Point> points = lines[1].GetIntersectionWith(lines[5]);
             Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(2 / 3f, 2), points[0]);
+        }
+
+        [Fact]
+        public void GetIntersectionWith_L1_L6()
+        {
+            List<Point> points = lines[1].GetIntersectionWith(lines[6]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(5.1111111, 2), points[0]);
+        }
+
+        [Fact]
+        public void GetIntersectionWith_L2_L6()
+        {
+            List<Point> points = lines[2].GetIntersectionWith(lines[6]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(4.1538459, 4.1538459), points[0]);
+        }
+
+        [Fact]
+        public void GetIntersectionWith_L3_L6()
+        {
+            List<Point> points = lines[3].GetIntersectionWith(lines[6]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(3.6, 5.4), points[0]);
+        }
+
+        [Fact]
+        public void GetIntersectionWith_L5_L6()
+        {
+            List<Point> points = lines[5].GetIntersectionWith(lines[6]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(2.57142855, 7.714285755), points[0]);
+        }
+
+        [Fact]
+        public void GetIntersectionWith_L2_L3()
+        {
+            List<Point> points = lines[2].GetIntersectionWith(lines[3]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(4.5, 4.5), points[0]);
+        }
+        [Fact]
+        public void GetIntersectionWith_L1_L3()
+        {
+            List<Point> points = lines[1].GetIntersectionWith(lines[3]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(7, 2), points[0]);
+        }
+
+        [Fact]
+        public void GetIntersectionWith_L1_L2()
+        {
+            List<Point> points = lines[1].GetIntersectionWith(lines[2]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(2, 2), points[0]);
+        }
+
+        [Fact]
+        public void GetIntersectionWith_L0_L3()
+        {
+            List<Point> points = lines[0].GetIntersectionWith(lines[3]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
             Assert.Equal(new Point(1, 8), points[0]);
-
-            List<Point> points0  = lines[1].getIntersectionWith(lines[2]);
-            Assert.NotEmpty(points0);
-            Assert.Equal(new Point(2, 2), points0[0]);
-
-            List<Point> points1 = lines[2].getIntersectionWith(lines[3]);
-            Assert.NotEmpty(points1);
-            Assert.Equal(new Point(4, 4), points1[0]);
-
-            List<Point> points2 = lines[1].getIntersectionWith(lines[3]);
-            Assert.NotEmpty(points2);
-            Assert.Equal(new Point(7, 2), points2[0]);
-
+        }
+        [Fact]
+        public void GetIntersectionWith_L3_L5()
+        {
+            List<Point> points = lines[3].GetIntersectionWith(lines[5]);
+            Assert.NotEmpty(points);
+            Assert.Single(points);
+            Assert.Equal(new Point(2.25, 6.75), points[0]);
         }
     }
 }

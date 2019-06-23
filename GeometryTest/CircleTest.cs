@@ -10,7 +10,7 @@ namespace GeometryTest
     {
         List<Circle> circles;
         List<double> Xs;
-        List<List<List<I2DShape>>> ExpectedReturns;
+        readonly List<List<List<I2DShape>>> ExpectedReturns;
         public CircleTest()
         {
             this.circles = new List<Circle>()
@@ -82,11 +82,11 @@ namespace GeometryTest
                     new List<I2DShape>(),
                     new List<I2DShape>(),
                     new List<I2DShape>(){ new Point( 0, 0) },
-                    new List<I2DShape>(){ new Point( 1, 3), new Point(-4,-3) },
-                    new List<I2DShape>(){ new Point( 2, 4), new Point(-3,-4) },
-                    new List<I2DShape>(){ new Point( 3, 4.582576), new Point(-2,-4.582576) },
-                    new List<I2DShape>(){ new Point( 4, 4.898979), new Point(-1,-4.898979) },
-                    new List<I2DShape>(){ new Point( 5, 5), new Point( 0,-5) }
+                    new List<I2DShape>(){ new Point( 1, 3), new Point(1,-3) },
+                    new List<I2DShape>(){ new Point( 2, 4), new Point(2,-4) },
+                    new List<I2DShape>(){ new Point( 3, 4.582576), new Point(3,-4.582576) },
+                    new List<I2DShape>(){ new Point( 4, 4.898979), new Point(4,-4.898979) },
+                    new List<I2DShape>(){ new Point( 5, 5), new Point( 5,-5) }
                 },
                 //Circle[4]
                 new List<List<I2DShape>>()
@@ -112,11 +112,11 @@ namespace GeometryTest
                     new List<I2DShape>(),
                     new List<I2DShape>(),
                     new List<I2DShape>(){ new Point( 0, 0+5) },
-                    new List<I2DShape>(){ new Point( 1, 3+5), new Point(-4,-3+5) },
-                    new List<I2DShape>(){ new Point( 2, 4+5), new Point(-3,-4+5) },
-                    new List<I2DShape>(){ new Point( 3, 4.582576+5), new Point(-2,-4.582576+5) },
-                    new List<I2DShape>(){ new Point( 4, 4.898979+5), new Point(-1,-4.898979+5) },
-                    new List<I2DShape>(){ new Point( 5, 5+5), new Point( 0,-5+5) }
+                    new List<I2DShape>(){ new Point( 1, 3+5), new Point(1,-3+5) },
+                    new List<I2DShape>(){ new Point( 2, 4+5), new Point(2,-4+5) },
+                    new List<I2DShape>(){ new Point( 3, 4.582576+5), new Point(3,-4.582576+5) },
+                    new List<I2DShape>(){ new Point( 4, 4.898979+5), new Point(4,-4.898979+5) },
+                    new List<I2DShape>(){ new Point( 5, 5+5), new Point( 5,-5+5) }
                 }
             };
         }
@@ -137,6 +137,32 @@ namespace GeometryTest
                     }
                 }
             }
+
+        }
+        [Fact]
+        public void CircleDiff()
+        {
+            double? diff = circles[0].GetEquationDiffAtX(new Point(0, 5));
+            Assert.NotNull(diff);
+            Assert.Equal(0f, (double)diff);
+
+            double? diff1 = circles[0].GetEquationDiffAtX(new Point(0, -5));
+            Assert.NotNull(diff1);
+            Assert.Equal(0f, (double)diff1);
+
+            double? diff2 = circles[0].GetEquationDiffAtX(new Point(5 / Math.Sqrt(2), 5/Math.Sqrt(2)));
+            Assert.NotNull(diff2);
+            Assert.Equal(-1f, (double)diff2,6);
+
+            double? diff3 = circles[0].GetEquationDiffAtX(new Point(5 / Math.Sqrt(2), -5 / Math.Sqrt(2)));
+            Assert.NotNull(diff3);
+            Assert.Equal(1f, (double)diff3, 6);
+
+        }
+        [Fact]
+        public void CircleIntersection_C0_C1()
+        {
+            List<Point> l = circles[0].GetIntersectionWith(circles[1]);
 
         }
     }
