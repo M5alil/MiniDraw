@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Geomtry\Geomtry.csproj" />
+    <ProjectReference Include="..\Geometry\Geometry.csproj" />
   </ItemGroup>
 
 </Project>
